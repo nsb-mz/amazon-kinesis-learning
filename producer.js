@@ -88,8 +88,8 @@ AWS.config.credentials.get(function(err) {
 		var stockPrice = getRandomTrade();
 		// 키네시스 레코드 생성
 		var record = {
-			Data: JSON.stringify(stockPrice),
-			PartitionKey: 'partition-' + stockPrice.id
+			Data: JSON.stringify(stockPrice), // 필수
+			PartitionKey: 'partition-' + stockPrice.id // 필수, 최대 256자
 		};
 		recordData.push(record);
 
@@ -117,11 +117,11 @@ AWS.config.credentials.get(function(err) {
         if (!recordData.length) {
             return;
         }
-		// 키네시스 업로드
+		// 키네시스 업로드,  최대 500개 레코드 까지 처리 가능, 1레코드 최대 1MB , 전체레코드 최대 5MB 가능
         kinesis.putRecords({
             Records: recordData,
 			// TODO 키네시스 스트림 이름
-            StreamName: 'StockTradeStream'
+            StreamName: 'StockTradeStream' // 필수
         }, function(err, data) {
             if (err) {
                 console.error(err);
